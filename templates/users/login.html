@@ -1,0 +1,283 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+
+<head>
+    <!-- Basic Page Info -->
+    <meta charset="utf-8" />
+    <title>Barangay AI</title>
+
+
+    <!-- Link to CSS and JavaScript Files -->
+    <link rel="icon" sizes="180x180" href="{% static 'src/images/Bai_LOGO.png' %}" />
+    <link rel="icon" type="image/png" sizes="16x16" href="{% static 'src/images/Bai_LOGO.png' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'vendors/styles/core.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'vendors/styles/icon-font.min.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'vendors/styles/style.css' %}" />
+
+
+    <!-- Additional Styling -->
+    <style>
+        .login-header {
+            background-image: url("{% static 'src/images/header1.png' %}");
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-position: center;
+            border: none;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            transition: background 0.3s ease;
+            border-bottom: 2px solid #27ae60;
+        }
+
+        .login-header .brand-logo a {
+            cursor: default;
+        }
+
+        .login-header .logo-text {
+            color: #ffffff;
+            font-weight: bold;
+            font-size: 22px;
+        }
+
+        .pre-loader {
+            background-image: url("{% static 'src/images/hall.jpg' %}");
+            /* Replace with your image URL */
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            overflow: hidden;
+            /* Prevent scrolling */
+            height: 100vh;
+        }
+
+        .login-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .login-left {
+            flex: 1;
+            background-image: url("{% static 'src/images/Login_Home.jpeg' %}");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            position: relative;
+        }
+
+        .login-right {
+            position: absolute;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            height: 100%;
+        }
+
+        .login-box {
+            width: 100%;
+            max-width: 400px;
+            padding: 40px;
+            background-color: rgba(46, 139, 87, 0.9);
+            /* Slightly transparent green background */
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            color: #ffffff;
+            box-sizing: border-box;
+        }
+
+        .login-title {
+            margin-bottom: 30px;
+            color: #ffffff;
+            /* Ensure the title is white */
+        }
+
+        .btn-primary {
+            background-color: #27ae60;
+            border-color: #27ae60;
+        }
+
+        .btn-primary:hover {
+            background-color: #1e8449;
+            border-color: #1e8449;
+        }
+
+        .btn-outline-primary {
+            border-color: green;
+            /* White border to match the form container */
+        }
+
+        .btn-outline-primary:hover {
+            background-color: #ffffff;
+            color: #228B22;
+            /* Green color on hover */
+        }
+
+        .text-primary {
+            color: #27ae60 !important;
+        }
+    </style>
+</head>
+
+
+<body class="login-page">
+    <div class="pre-loader">
+        <div class="pre-loader-box">
+            <div class="loader-logo">
+                <img src="{% static 'src/images/BAi_LOGO.png' %}" alt="AI Logo" />
+            </div>
+            <div class="loader-progress" id="progress_div">
+                <div class="bar" id="bar1"></div>
+            </div>
+            <div class="percent" id="percent1"></div>
+            <div class="loading-text">Loading...</div>
+        </div>
+    </div>
+
+
+    <div class="login-header box-shadow">
+        <div class="container-fluid d-flex justify-content-between align-items-center">
+            <div class="brand-logo">
+                <a href="#">
+                    <img src="{% static 'src/images/BAi_LOGO.png' %}" alt="AI Logo" />
+                    <span class="logo-text">Barangay AI</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="login-container">
+        <div class="login-left"></div>
+        <div class="login-right">
+            <div class="login-box bg-white box-shadow border-radius-10">
+                <div class="login-title">
+                    <h2 class="text-center text-primary">Login</h2>
+                </div>
+                <form method="post" action="{% url 'login' %}" id="loginForm">
+                    {% csrf_token %}
+                    {% if error %}
+                    <div class="alert alert-danger">{{ error }}</div>
+                    {% endif %}
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control form-control-lg" name="username" placeholder="Username"
+                            required />
+                        <div class="input-group-append">
+                            <span class="input-group-text"><i class="icon-copy dw dw-user1"></i></span>
+                        </div>
+                    </div>
+                    <div class="input-group mb-3">
+                        <input type="password" class="form-control form-control-lg" name="password" id="password"
+                            placeholder="********" required maxlength="15" />
+                        <div class="input-group-append">
+                            <span class="input-group-text" id="togglePassword" style="cursor: pointer;">
+                                <i class="dw dw-eye" id="eyeIcon"></i>
+                            </span>
+                        </div>
+                    </div>
+                    {% if messages %}
+                    <div class="messages">
+                        {% for message in messages %}
+                        <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}">
+                            {{ message }}
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+
+                    <div class="d-flex justify-content-between mb-3">
+                        <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" id="customCheck1" />
+                            <label class="custom-control-label" for="customCheck1">Remember</label>
+                        </div>
+                        <div class="forgot-password"><a href="{% url 'forgot_pass' %}">Forgot Password?</a></div>
+                    </div>
+                    <div class="mb-3">
+                        <button type="submit" class="btn btn-primary btn-lg btn-block">Login</button>
+                    </div>
+                    <div class="font-16 weight-600 pt-2 pb-2 text-center" data-color="#707373">OR</div>
+                    <div class="mb-3">
+                        <a class="btn btn-outline-primary btn-lg btn-block" href="{% url 'register' %}">Create
+                            Account</a>
+                    </div>
+                </form>
+                <div id="error-message" class="text-danger text-center mt-3"></div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- JS Files -->
+    <script src="{% static 'vendors/scripts/core.js' %}"></script>
+    <script src="{% static 'vendors/scripts/script.min.js' %}"></script>
+    <script src="{% static 'vendors/scripts/process.js' %}"></script>
+    <script src="{% static 'vendors/scripts/layout-settings.js' %}"></script>
+    <script>
+        document.getElementById("loginForm").addEventListener("submit", function (event) {
+            event.preventDefault(); // Prevent the form from submitting the traditional way
+
+
+            var username = document.querySelector("input[name='username']").value.trim();
+            var password = document.querySelector("input[name='password']").value.trim();
+            var errorMessage = document.getElementById("error-message");
+
+
+            // Check if username or password is empty
+            if (username === "" || password === "") {
+                errorMessage.textContent = "Both fields are required.";
+            }
+            // Check if password is greater than 8 characters
+            else if (password.length > 15) {
+                errorMessage.textContent = "Password cannot exceed 15 characters.";
+            }
+            // If everything is valid, submit the form
+            else {
+                errorMessage.textContent = "";
+                document.getElementById("loginForm").submit();
+            }
+        });
+        // Get references to the password field and toggle icon
+        const passwordField = document.getElementById("password");
+        const togglePassword = document.getElementById("togglePassword");
+        const eyeIcon = document.getElementById("eyeIcon");
+
+
+        togglePassword.addEventListener("click", function () {
+            // Toggle the type attribute of the password field between 'password' and 'text'
+            const type = passwordField.getAttribute("type") === "password" ? "text" : "password";
+            passwordField.setAttribute("type", type);
+
+
+            // Toggle the icon class based on the current state
+            if (type === "password") {
+                eyeIcon.classList.remove("dw dw-eye-off"); // Hide icon
+                eyeIcon.classList.add("dw dw-eye");        // Show icon
+            } else {
+                eyeIcon.classList.remove("dw dw-eye");     // Hide icon
+                eyeIcon.classList.add("dw dw-eye-off");    // Show icon
+            }
+        });
+
+
+    </script>
+</body>
+
+
+</html>
