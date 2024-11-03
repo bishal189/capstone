@@ -55,7 +55,11 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'capstone.urls'
 
-
+from django.contrib.messages import constants as messages
+MESSAGE_TAGS = {
+    messages.ERROR: 'danger',
+   
+}
 # settings.py
 
 TEMPLATES = [

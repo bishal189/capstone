@@ -37,14 +37,12 @@ def login_view(request):
         username = request.POST.get('username')
         password = request.POST.get('password')
         
-        print('i am login ')
+      
         
-        logger.info(f"Attempting login for user: {username}")
         
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
-            logger.info(f"User {username} logged in successfully as {user.account_type}")
             
             if user.account_type == 'superadmin':
                 return redirect('superadmin_dashboard')
@@ -54,9 +52,8 @@ def login_view(request):
                 messages.error(request, 'You do not have access.')
                 return redirect('login')
         else:
-            logger.warning(f"Login failed for user: {username}")
             messages.error(request, 'Invalid credentials')
-            return render(request, 'users/login.html')
+            return redirect('login')
 
     return render(request, 'users/login.html')
 
@@ -83,7 +80,7 @@ def register(request):
 
         if not all([email, username, password, first_name, last_name, gender, contact_number]):
             print(' i am bad')
-            messages.error(request, "Please fill in all required fields.")
+            messages.success(request, "Please fill in all required fields.")
             return render(request, 'users/register.html')
 
         try:
